@@ -27,7 +27,7 @@ def load_notmnist(path='./notMNIST_small', letters='ABCDEFGHIJ',
             continue
         try:
             data.append(resize(imread(img_path), img_shape))
-            labels.append(class_i,)
+            labels.append(class_i, )
         except BaseException:
             print(
                 "found broken img: %s [it's ok if <10 images are broken]" %

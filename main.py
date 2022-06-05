@@ -8,33 +8,35 @@ letters = 'ABCDEFGHIJ'
 X_train, y_train, X_test, y_test = load_notmnist(letters=letters)
 X_train, X_test = X_train.reshape([-1, 784]), X_test.reshape([-1, 784])
 
-
-
 X_train = torch.tensor(X_train.T)
 y_train = F.one_hot(torch.tensor(y_train)).T
 X_test = torch.tensor(X_test.T)
 y_test = F.one_hot(torch.tensor(y_test)).T
 
-
 import random
+
 random_index = random.randrange(0, X_train.shape[1])
 
 
 def tanh(x):
-  return x.tanh()
+    return x.tanh()
+
 
 def relu(x):
-  return x.relu()
+    return x.relu()
+
 
 def softmax(x):
-  return x.softmax(dim=0)
+    return x.softmax(dim=0)
+
 
 def derative_tanh(x):
-  return 1 - x ** 2
+    return 1 - x ** 2
+
 
 def derative_relu(x):
-  df = x.clone().detach() > 0
-  return df.float()
+    df = x.clone().detach() > 0
+    return df.float()
 
 
 def initialize_parameters(n_x, n_h, n_y):
@@ -60,62 +62,64 @@ def initialize_parameters(n_x, n_h, n_y):
 
     return parameters
 
+
 def forward_propagation(x, parameters):
-  w1 = parameters['w1']
-  b1 = parameters['b1']
-  w2 = parameters['w2']
-  b2 = parameters['b2']
+    w1 = parameters['w1']
+    b1 = parameters['b1']
+    w2 = parameters['w2']
+    b2 = parameters['b2']
 
-  z1 = w1 @ x + b1
-  a1 = relu(z1)
+    z1 = w1 @ x + b1
+    a1 = relu(z1)
 
-  z2 = w2 @ a1 + b2
-  a2 = softmax(z2)
+    z2 = w2 @ a1 + b2
+    a2 = softmax(z2)
 
-  forward_cache = {
-      'z1': z1,
-      'a1': a1,
-      'z2': z2,
-      'a2': a2
-  }
+    forward_cache = {
+        'z1': z1,
+        'a1': a1,
+        'z2': z2,
+        'a2': a2
+    }
 
-  return forward_cache
+    return forward_cache
+
 
 def cost_function(a2, y):
-  m = y.shape[1]
+    m = y.shape[1]
 
-  cost = -(1/m) * torch.sum(y * torch.log(a2))
+    cost = -(1 / m) * torch.sum(y * torch.log(a2))
 
-  return cost
+    return cost
+
 
 def back_propagation(x, y, parameters, forward_cache):
+    w1 = parameters['w1']
+    b1 = parameters['b1']
+    w2 = parameters['w2']
+    b2 = parameters['b2']
 
-  w1 = parameters['w1']
-  b1 = parameters['b1']
-  w2 = parameters['w2']
-  b2 = parameters['b2']
+    a1 = forward_cache['a1']
+    a2 = forward_cache['a2']
 
-  a1 = forward_cache['a1']
-  a2 = forward_cache['a2']
+    m = y.shape[1]
 
-  m = y.shape[1]
+    dz2 = a2 - y
+    dw2 = (1 / m) * dz2 @ a1.T
+    db2 = (1 / m) * torch.sum(dz2, axis=1, keepdim=True)
 
-  dz2 = a2 - y
-  dw2 = (1 / m) * dz2 @ a1.T
-  db2 = (1 / m) * torch.sum(dz2, axis=1, keepdim=True)
+    dz1 = (1 / m) * w2.T @ dz2 * derative_relu(a1)
+    dw1 = (1 / m) * dz1 @ x.T
+    db1 = (1 / m) * torch.sum(dz1, axis=1, keepdim=True)
 
-  dz1 = (1 / m) * w2.T @ dz2 * derative_relu(a1)
-  dw1 = (1 / m) * dz1 @ x.T
-  db1 = (1 / m) * torch.sum(dz1, axis=1, keepdim=True)
+    gradients = {
+        'dw1': dw1,
+        'db1': db1,
+        'dw2': dw2,
+        'db2': db2
+    }
 
-  gradients = {
-      'dw1': dw1,
-      'db1': db1,
-      'dw2': dw2,
-      'db2': db2
-  }
-
-  return gradients
+    return gradients
 
 
 def update_parameters(parameters, gradients, learning_rate):
@@ -173,6 +177,7 @@ def model(x, y, n_h, learning_rate, iterations):
 
     return parameters, cost_list
 
+
 iterations = 1000
 n_h = 30 ** 2
 learning_rate = 0.9
@@ -183,21 +188,21 @@ t = torch.arange(0, iterations)
 
 
 def accuracy(inp, labels, parameters):
-  forward_cache = forward_propagation(inp, parameters)
-  a_out = forward_cache['a2']
+    forward_cache = forward_propagation(inp, parameters)
+    a_out = forward_cache['a2']
 
-  _, a_out = torch.topk(a_out, k=1, dim=0)
-  _, y_out = torch.topk(labels, k=1, dim=0)
+    _, a_out = torch.topk(a_out, k=1, dim=0)
+    _, y_out = torch.topk(labels, k=1, dim=0)
 
-  acc = float(torch.mean((a_out == y_out).float()) * 100)
+    acc = float(torch.mean((a_out == y_out).float()) * 100)
 
-  return acc
+    return acc
+
 
 print(f'Accuracy of Train Dataset is: {round(accuracy(X_train[:, :n_h], y_train[:, :n_h], Parameters), 2)}%.')
 print(f'Accuracy of Test Dataset is: {round(accuracy(X_test[:, :n_h], y_test[:, :n_h], Parameters), 2)}%.')
 
 random_inx = random.randrange(0, X_test.shape[1])
-
 
 forward_cache = forward_propagation(X_test[:, random_inx].reshape(X_test.shape[0], 1), Parameters)
 a_out = forward_cache['a2']
