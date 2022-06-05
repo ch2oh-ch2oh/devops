@@ -64,3 +64,26 @@ jobs:
             пришли анализы
       - run: pwd
       - run: ls
+
+  on_finish:
+    needs: Lint
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Success message
+        if: ${{ success() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: ура успех
+          document: results.zip
+
+      - name: Failure message
+        if: ${{ failure() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: какая досада
