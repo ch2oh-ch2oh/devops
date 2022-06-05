@@ -2,8 +2,23 @@ name: telegram message
 on: [push]
 jobs:
 
+
+  flake8-lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      - name: flake8 Lint
+        uses: py-actions/flake8@v2
+
   build:
     name: Build
+    needs: flake8-lint
     runs-on: ubuntu-latest
     steps:
       - name: send telegram message on push
@@ -19,23 +34,11 @@ jobs:
 
             Коммит: https://github.com/${{ github.repository }}/commit/${{github.sha}}
 
-  flake8-lint:
-    runs-on: ubuntu-latest
-    name: Lint
-    needs: build
-    steps:
-      - name: Check out source repository
-        uses: actions/checkout@v2
-      - name: Set up Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.8"
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
 
   third-job:
     runs-on: ubuntu-latest
     name: slave
+    needs: flake8-lint
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v2
@@ -66,7 +69,7 @@ jobs:
       - run: ls
 
   on_finish:
-    needs: flake8-lint
+    needs: [third-job, build]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
