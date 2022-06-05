@@ -1,8 +1,6 @@
 from notmnist import load_notmnist
-import matplotlib as plt
 import torch.nn.functional as F
-import torch, torch.nn as nn
-import numpy as np
+import torch
 
 letters = 'ABCDEFGHIJ'
 X_train, y_train, X_test, y_test = load_notmnist(letters=letters)
@@ -166,14 +164,16 @@ def model(x, y, n_h, learning_rate, iterations):
 
         cost = cost_function(forward_cache['a2'], y_samples)
 
-        gradients = back_propagation(x_samples, y_samples, parameters, forward_cache)
+        gradients = back_propagation(x_samples, y_samples,
+                                     parameters, forward_cache)
 
         parameters = update_parameters(parameters, gradients, learning_rate)
 
         cost_list.append(cost)
 
         if i % (iterations / 10) == 0:
-            print(f"Cost after {i} iterations is: {cost}")
+            with open("result.txt", "a+") as ouf:
+                ouf.write(f"Cost after {i} iterations is: {cost}")
 
     return parameters, cost_list
 
@@ -199,8 +199,11 @@ def accuracy(inp, labels, parameters):
     return acc
 
 
-print(f'Accuracy of Train Dataset is: {round(accuracy(X_train[:, :n_h], y_train[:, :n_h], Parameters), 2)}%.')
-print(f'Accuracy of Test Dataset is: {round(accuracy(X_test[:, :n_h], y_test[:, :n_h], Parameters), 2)}%.')
+with open("result.txt", "a+") as ouf:
+    ouf.write(
+        f'Accuracy of Train Dataset is: {round(accuracy(X_train[:, :n_h], y_train[:, :n_h], Parameters), 2)}%.')  # noqa
+    ouf.write(
+        f'Accuracy of Test Dataset is: {round(accuracy(X_test[:, :n_h], y_test[:, :n_h], Parameters), 2)}%.')  # noqa
 
 random_inx = random.randrange(0, X_test.shape[1])
 

@@ -49,3 +49,11 @@ jobs:
             scikit-image
             torch
       - run: python main.py
+
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          document: results.txt
+          message: |
+            пришли анализы
