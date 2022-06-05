@@ -11,7 +11,7 @@ y_train = F.one_hot(torch.tensor(y_train)).T
 X_test = torch.tensor(X_test.T)
 y_test = F.one_hot(torch.tensor(y_test)).T
 
-import random
+import random # noqa
 
 random_index = random.randrange(0, X_train.shape[1])
 
@@ -92,10 +92,10 @@ def cost_function(a2, y):
 
 
 def back_propagation(x, y, parameters, forward_cache):
-    w1 = parameters['w1']
-    b1 = parameters['b1']
+    w1 = parameters['w1'] # noqa
+    b1 = parameters['b1'] # noqa
     w2 = parameters['w2']
-    b2 = parameters['b2']
+    b2 = parameters['b2'] # noqa
 
     a1 = forward_cache['a1']
     a2 = forward_cache['a2']
@@ -207,7 +207,7 @@ with open("result.txt", "a+") as ouf:
 
 random_inx = random.randrange(0, X_test.shape[1])
 
-forward_cache = forward_propagation(X_test[:, random_inx].reshape(X_test.shape[0], 1), Parameters)
+forward_cache = forward_propagation(X_test[:, random_inx].reshape(X_test.shape[0], 1), Parameters) # noqa
 a_out = forward_cache['a2']
 
 _, a_out = torch.topk(a_out, k=1, dim=0)

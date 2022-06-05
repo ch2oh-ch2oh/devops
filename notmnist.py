@@ -14,7 +14,7 @@ def load_notmnist(path='./notMNIST_small', letters='ABCDEFGHIJ',
     if not os.path.exists(path):
         print("Downloading data...")
         assert os.system(
-            'wget http://yaroslavvb.com/upload/notMNIST/notMNIST_small.tar.gz') == 0
+            'wget http://yaroslavvb.com/upload/notMNIST/notMNIST_small.tar.gz') == 0 # noqa
         print("Extracting ...")
         assert os.system(
             'tar -zxvf notMNIST_small.tar.gz > untar_notmnist.log') == 0
