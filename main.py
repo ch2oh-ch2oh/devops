@@ -173,7 +173,7 @@ def model(x, y, n_h, learning_rate, iterations):
 
         if i % (iterations / 10) == 0:
             with open("result.txt", "a+") as ouf:
-                ouf.write(f"Cost after {i} iterations is: {cost}")
+                ouf.write(f"Cost after {i} iterations is: {cost}\n")
 
     return parameters, cost_list
 
@@ -201,9 +201,9 @@ def accuracy(inp, labels, parameters):
 
 with open("result.txt", "a+") as ouf:
     ouf.write(
-        f'Accuracy of Train Dataset is: {round(accuracy(X_train[:, :n_h], y_train[:, :n_h], Parameters), 2)}%.')  # noqa
+        f'Accuracy of Train Dataset is: {round(accuracy(X_train[:, :n_h], y_train[:, :n_h], Parameters), 2)}%.\n')  # noqa
     ouf.write(
-        f'Accuracy of Test Dataset is: {round(accuracy(X_test[:, :n_h], y_test[:, :n_h], Parameters), 2)}%.')  # noqa
+        f'Accuracy of Test Dataset is: {round(accuracy(X_test[:, :n_h], y_test[:, :n_h], Parameters), 2)}%.\n')  # noqa
 
 random_inx = random.randrange(0, X_test.shape[1])
 
