@@ -62,3 +62,5 @@ jobs:
           document: ${{runner.workspace}}/result.txt
           message: |
             пришли анализы
+      - run: pwd
+      - run: ls
