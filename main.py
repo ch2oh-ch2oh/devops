@@ -213,3 +213,4 @@ a_out = forward_cache['a2']
 _, a_out = torch.topk(a_out, k=1, dim=0)
 
 print('Our model says, it is:', letters[int(a_out.squeeze()[0])])
+
